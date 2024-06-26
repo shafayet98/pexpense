@@ -1,8 +1,6 @@
 
 import { pool } from './connection.js';
 
-
-
 async function getUsers(){
     const rows = await pool.query("SELECT * from Users");
     return rows[0];
