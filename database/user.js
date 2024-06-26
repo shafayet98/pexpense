@@ -2,18 +2,19 @@
 import { pool } from './connection.js';
 
 
+
 async function getUsers(){
     const rows = await pool.query("SELECT * from Users");
     return rows[0];
 }
 
 async function getUser(id){
-    const rows = await pool.query(`
+    const row = await pool.query(`
         SELECT * 
         from Users
         WHERE user_id = ? 
         `, [id]);
-    return rows[0];
+    return row[0];
 }
 
 async function insertUser(email,password){
@@ -21,8 +22,8 @@ async function insertUser(email,password){
         INSERT INTO Users (email, password)
         VALUES (?,?)  
     `, [email, password]);
-
-    return result;
+    const id = result[0].insertId;
+    return getUser(id);
 }
 
 
