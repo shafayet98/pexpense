@@ -15,6 +15,15 @@ async function getUser(id){
     return row[0];
 }
 
+async function getUserwithEmail(email){
+    const row = await pool.query(`
+        SELECT *
+        from Users
+        WHERE email = ?    
+    `,[email]);
+    return row[0];
+}
+
 async function insertUser(email,password){
     const result = await pool.query(`
         INSERT INTO Users (email, password)
@@ -31,4 +40,4 @@ async function insertUser(email,password){
 // const rows = await getUsers();
 // console.log(rows);
 
-export { getUsers, getUser, insertUser }
+export { getUsers, getUser, insertUser, getUserwithEmail }

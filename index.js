@@ -1,11 +1,11 @@
 import express from 'express';
-import {users} from './routes/users.js';
+import {route_users} from './routes/users.js';
 
 const app = express();
 
 
 app.use(express.json());
-app.use('/api/users', users);
+app.use('/api/users', route_users);
 
 // app.put();
 // app.delete();
