@@ -1,5 +1,6 @@
 import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
+import bcrypt from 'bcrypt';
 
 const route_users = express.Router();
 
@@ -24,7 +25,10 @@ route_users.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'User already exists' });
     }
 
-    const user = await insertUser(email, password);
+    // hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const user = await insertUser(email, hashedPassword);
     res.status(201).send(user);
 });
 
