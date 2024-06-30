@@ -9,15 +9,17 @@ route_users.get('/', async (req, res)=>{
     res.send(users);
 });
 
-
 route_users.get('/:id', async (req, res)=>{
     const id = req.params.id;
     const user = await getUser(id);
     res.send(user);
 });
 
+
+
 route_users.post('/register', async (req, res) => {
-    const {email, password} = req.body;
+    const {email, password} = req.body.data;
+    // console.log(email, password);
 
     // check if the user exist in db
     const existingUser = await getUserwithEmail(email);
