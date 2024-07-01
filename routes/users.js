@@ -1,6 +1,7 @@
 import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const route_users = express.Router();
 
@@ -18,11 +19,12 @@ route_users.get('/:id', async (req, res)=>{
 
 
 route_users.post('/register', async (req, res) => {
-    const {email, password} = req.body.data;
+    const {email, password} = req.body;
     // console.log(email, password);
 
     // check if the user exist in db
     const existingUser = await getUserwithEmail(email);
+    console.log(existingUser);
     if (existingUser.length > 0 ){
         return res.status(400).json({ message: 'User already exists' });
     }
@@ -34,9 +36,24 @@ route_users.post('/register', async (req, res) => {
     res.status(201).send(user);
 });
 
-// route_users.post('/login', async(req, res) =>{
+route_users.post('/login', async(req, res) =>{
+    const {email, password} = req.body;
+    
+    const usr = await getUserwithEmail(email);
+    // console.log(usr[0].password);
+    if(usr.length > 0){
+        const match = await bcrypt.compare(password, usr[0].password);
+        if(match) {
+            //login
+            res.json({ message: 'Successful' })
+        }else{
+            res.json({ message: 'Password does not match' })
+        }
+    }else{
+        return res.status(400).json({ message: "User not found"});
+    }
 
-// })
+})
 
 
 export {route_users}
