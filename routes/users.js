@@ -1,7 +1,12 @@
 import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
+import { authenticateJWToken } from '../middlewares/authorization.js'
+import { getCategoriesByUser, createCategories} from '../database/category.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const route_users = express.Router();
 
@@ -45,7 +50,11 @@ route_users.post('/login', async(req, res) =>{
         const match = await bcrypt.compare(password, usr[0].password);
         if(match) {
             //login
-            res.json({ message: 'Successful' })
+            const user = { user_id: usr[0].user_id}
+            console.log(user);
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+            res.json({ accessToken: accessToken})
+
         }else{
             res.json({ message: 'Password does not match' })
         }
@@ -55,5 +64,20 @@ route_users.post('/login', async(req, res) =>{
 
 })
 
+
+
+// expense APIs
+
+// user creats categories
+route_users.post('/categories', authenticateJWToken, async (req, res) =>{
+    
+    const user = req.user_id;
+    const {category} = req.body;
+    console.log(user.user_id);
+    console.log(category);
+    const categories = await createCategories(user.user_id, category);
+    res.json(categories);
+    
+})
 
 export {route_users}
