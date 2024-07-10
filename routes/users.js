@@ -24,7 +24,7 @@ route_users.get('/:id', async (req, res)=>{
 
 
 route_users.post('/register', async (req, res) => {
-    const {email, password} = req.body;
+    const {email, password} = req.body.data;
     // console.log(email, password);
 
     // check if the user exist in db
@@ -42,7 +42,7 @@ route_users.post('/register', async (req, res) => {
 });
 
 route_users.post('/login', async(req, res) =>{
-    const {email, password} = req.body;
+    const {email, password} = req.body.data;
     
     const usr = await getUserwithEmail(email);
     // console.log(usr[0].password);
@@ -53,7 +53,7 @@ route_users.post('/login', async(req, res) =>{
             const user = { user_id: usr[0].user_id}
             console.log(user);
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-            res.json({ accessToken: accessToken})
+            res.json({ userid: usr[0].user_id, accessToken: accessToken});
 
         }else{
             res.json({ message: 'Password does not match' })
