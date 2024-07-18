@@ -7,7 +7,7 @@ async function getCategoriesByUser(id){
         from Categories
         WHERE user_id = ? 
         `, [id]);
-    return rows;
+    return rows[0];
 }
 
 async function createCategories(user_id,category_name){

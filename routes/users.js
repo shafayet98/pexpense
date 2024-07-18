@@ -21,8 +21,6 @@ route_users.get('/:id', async (req, res)=>{
     res.send(user);
 });
 
-
-
 route_users.post('/register', async (req, res) => {
     const {email, password} = req.body.data;
     // console.log(email, password);
@@ -54,9 +52,8 @@ route_users.post('/login', async(req, res) =>{
             console.log(user);
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
             res.json({ userid: usr[0].user_id, accessToken: accessToken});
-
         }else{
-            res.json({ message: 'Password does not match' })
+            res.json({ message: 'Password does not match' }).status(400);
         }
     }else{
         return res.status(400).json({ message: "User not found"});
@@ -66,18 +63,28 @@ route_users.post('/login', async(req, res) =>{
 
 
 
+
+
 // expense APIs
 
 // user creats categories
 route_users.post('/categories', authenticateJWToken, async (req, res) =>{
     
     const user = req.user_id;
-    const {category} = req.body;
-    console.log(user.user_id);
-    console.log(category);
+    const category = req.body.data["category"];
     const categories = await createCategories(user.user_id, category);
     res.json(categories);
     
 })
+
+route_users.get('/categories/:id', authenticateJWToken, async (req, res) =>{
+    
+    const userid = req.params.id;
+    const categories = await getCategoriesByUser(userid);
+    res.json(categories);
+    
+})
+
+// user creates expense 
 
 export {route_users}
