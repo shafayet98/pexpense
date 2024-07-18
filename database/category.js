@@ -19,4 +19,14 @@ async function createCategories(user_id,category_name){
     return getCategoriesByUser(user_id);
 }
 
-export { getCategoriesByUser, createCategories }
+async function getCatID(catName,user_id){
+    const result = await pool.query(`
+        SELECT * 
+        FROM Categories
+        where category_name = "${catName}" AND user_id = ${user_id}
+    `);
+    console.log(result);
+    return result;
+}
+
+export { getCategoriesByUser, createCategories, getCatID }

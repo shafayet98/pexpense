@@ -1,7 +1,7 @@
 import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
 import { authenticateJWToken } from '../middlewares/authorization.js'
-import { getCategoriesByUser, createCategories} from '../database/category.js'
+import { getCategoriesByUser, createCategories, getCatID} from '../database/category.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -61,10 +61,6 @@ route_users.post('/login', async(req, res) =>{
 
 })
 
-
-
-
-
 // expense APIs
 
 // user creats categories
@@ -76,13 +72,21 @@ route_users.post('/categories', authenticateJWToken, async (req, res) =>{
     res.json(categories);
     
 })
-
 route_users.get('/categories/:id', authenticateJWToken, async (req, res) =>{
     
     const userid = req.params.id;
     const categories = await getCategoriesByUser(userid);
     res.json(categories);
-    
+})
+
+// Internal use APIs.
+
+route_users.get('/category/name', authenticateJWToken, async (req, res) =>{
+    const user = req.user_id;
+    const catName = req.query.name;
+    console.log(user.user_id, catName);
+    const cat_details = await getCatID(catName, user.user_id);
+    res.json(cat_details);
 })
 
 // user creates expense 
