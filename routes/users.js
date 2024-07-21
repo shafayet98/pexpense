@@ -2,6 +2,7 @@ import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
 import { authenticateJWToken } from '../middlewares/authorization.js'
 import { getCategoriesByUser, createCategories, getCatID} from '../database/category.js'
+import { createExpense, getExpenseDetails, categoryBasedSum} from '../database/expense.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -90,5 +91,20 @@ route_users.get('/category/name', authenticateJWToken, async (req, res) =>{
 })
 
 // user creates expense 
+
+route_users.post('/expense', authenticateJWToken, async (req, res) =>{
+    const {user_id, category_id, amount} = req.body.data;
+    console.log(user_id, category_id, amount);
+    const expense_details = await createExpense(user_id, category_id, amount);
+    res.json(expense_details);
+})
+
+// sum of categories
+
+route_users.get('/category/sum', authenticateJWToken, async (req, res) =>{
+    const user = req.user_id;
+    const sumbycats = await categoryBasedSum(user.user_id);
+    res.json(sumbycats);
+})
 
 export {route_users}
