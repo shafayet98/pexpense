@@ -52,7 +52,7 @@ route_users.post('/login', async(req, res) =>{
             const user = { user_id: usr[0].user_id}
             console.log(user);
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-            res.json({ userid: usr[0].user_id, accessToken: accessToken});
+            res.json({ userid: usr[0].user_id, username: usr[0].user_name, accessToken: accessToken});
         }else{
             res.json({ message: 'Password does not match' }).status(400);
         }
