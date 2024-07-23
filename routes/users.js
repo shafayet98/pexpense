@@ -1,7 +1,7 @@
 import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
 import { authenticateJWToken } from '../middlewares/authorization.js'
-import { getCategoriesByUser, createCategories, getCatID} from '../database/category.js'
+import { getCategoriesByUser, createCategories, getCatID, deleteCategory} from '../database/category.js'
 import { createExpense, getExpenseDetails, categoryBasedSum} from '../database/expense.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -74,11 +74,19 @@ route_users.post('/categories', authenticateJWToken, async (req, res) =>{
     
 })
 route_users.get('/categories/:id', authenticateJWToken, async (req, res) =>{
-    
     const userid = req.params.id;
     const categories = await getCategoriesByUser(userid);
     res.json(categories);
-})
+});
+
+// user delete category
+route_users.delete('/categories/:id', authenticateJWToken, async (req, res) =>{
+    const cat_id = req.params.id;
+    // call the function that will delete the category
+    const deletedRow = await deleteCategory(cat_id);
+    res.json(deletedRow);
+    console.log(deletedRow);
+});
 
 // Internal use APIs.
 
@@ -98,6 +106,8 @@ route_users.post('/expense', authenticateJWToken, async (req, res) =>{
     const expense_details = await createExpense(user_id, category_id, amount);
     res.json(expense_details);
 })
+
+
 
 // sum of categories
 

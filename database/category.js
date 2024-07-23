@@ -29,4 +29,10 @@ async function getCatID(catName,user_id){
     return result;
 }
 
-export { getCategoriesByUser, createCategories, getCatID }
+async function deleteCategory(cat_id){
+    const delete_from_expense = await pool.query(`DELETE FROM Expenses WHERE category_id = ?`,[cat_id]);
+    const delete_from_category = await pool.query(`DELETE FROM Categories WHERE category_id = ?`,[cat_id]);
+    return delete_from_category[0];
+}
+
+export { getCategoriesByUser, createCategories, getCatID, deleteCategory }
