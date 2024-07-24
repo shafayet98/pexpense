@@ -25,7 +25,7 @@ async function getCatID(catName,user_id){
         FROM Categories
         where category_name = "${catName}" AND user_id = ${user_id}
     `);
-    console.log(result);
+    // console.log(result[0][0].category_id);
     return result;
 }
 

@@ -95,6 +95,7 @@ route_users.get('/category/name', authenticateJWToken, async (req, res) =>{
     const catName = req.query.name;
     console.log(user.user_id, catName);
     const cat_details = await getCatID(catName, user.user_id);
+    console.log(cat_details[0][0].category_id)
     res.json(cat_details);
 })
 
