@@ -33,6 +33,20 @@ async function insertUser(email,password){
     return getUser(id);
 }
 
+/*
+UPDATE table_name
+SET column1 = value1, column2 = value2, ...
+WHERE condition;
+*/
+
+async function updateUser(userid, username, email){
+    const result = await pool.query(`
+        UPDATE Users
+        SET email = "${email}", user_name = "${username}"
+        WHERE user_id = ${userid};
+    `);
+    return getUser(userid);
+}
 
 // const result = await insertUser("test02@gmail.com", "mypass02");
 // console.log(result[0]);
@@ -40,4 +54,4 @@ async function insertUser(email,password){
 // const rows = await getUsers();
 // console.log(rows);
 
-export { getUsers, getUser, insertUser, getUserwithEmail }
+export { getUsers, getUser, insertUser, getUserwithEmail, updateUser}

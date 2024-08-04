@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUsers, getUser, insertUser, getUserwithEmail} from '../database/user.js'
+import { getUsers, getUser, insertUser, getUserwithEmail, updateUser} from '../database/user.js'
 import { authenticateJWToken } from '../middlewares/authorization.js'
 import { getCategoriesByUser, createCategories, getCatID, deleteCategory} from '../database/category.js'
 import { createExpense, getExpenseDetails, categoryBasedSum} from '../database/expense.js'
@@ -52,7 +52,7 @@ route_users.post('/login', async(req, res) =>{
             const user = { user_id: usr[0].user_id}
             console.log(user);
             const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-            res.json({ userid: usr[0].user_id, username: usr[0].user_name, accessToken: accessToken});
+            res.json({ userid: usr[0].user_id, username: usr[0].user_name, accessToken: accessToken, useremail: email});
         }else{
             res.json({ message: 'Password does not match' }).status(400);
         }
@@ -109,13 +109,21 @@ route_users.post('/expense', authenticateJWToken, async (req, res) =>{
 })
 
 
-
 // sum of categories
 
 route_users.get('/category/sum', authenticateJWToken, async (req, res) =>{
     const user = req.user_id;
     const sumbycats = await categoryBasedSum(user.user_id);
     res.json(sumbycats);
+})
+
+// settings - update username and email
+
+route_users.post('/settings/update', authenticateJWToken, async(req, res)=>{
+    const {userid, username, email} = req.body.data;
+    // IMPLEMENT LATER check if the email already exist in DB, if it does, send error.
+    const update_user_details = await updateUser(userid, username, email);
+    res.json(update_user_details);;
 })
 
 export {route_users}
