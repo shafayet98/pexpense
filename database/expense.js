@@ -38,4 +38,12 @@ async function categoryBasedSum(id){
     return rows[0];
 }
 
-export { createExpense, getExpenseDetails, categoryBasedSum}
+async function SingleCategoryExpense(catid,userid){
+    const rows = await pool.query(
+        `SELECT * from Expenses 
+        where category_id = ${catid} and user_id = ${userid} and created_at >= CURDATE() - INTERVAL 7 DAY ;`
+    );
+    return rows[0];
+}
+
+export { createExpense, getExpenseDetails, categoryBasedSum, SingleCategoryExpense}

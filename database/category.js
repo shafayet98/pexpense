@@ -35,4 +35,6 @@ async function deleteCategory(cat_id){
     return delete_from_category[0];
 }
 
+
+
 export { getCategoriesByUser, createCategories, getCatID, deleteCategory }

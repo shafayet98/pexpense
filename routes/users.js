@@ -2,7 +2,7 @@ import express from 'express';
 import { getUsers, getUser, insertUser, getUserwithEmail, updateUser} from '../database/user.js'
 import { authenticateJWToken } from '../middlewares/authorization.js'
 import { getCategoriesByUser, createCategories, getCatID, deleteCategory} from '../database/category.js'
-import { createExpense, getExpenseDetails, categoryBasedSum} from '../database/expense.js'
+import { createExpense, getExpenseDetails, categoryBasedSum, SingleCategoryExpense} from '../database/expense.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -123,7 +123,16 @@ route_users.post('/settings/update', authenticateJWToken, async(req, res)=>{
     const {userid, username, email} = req.body.data;
     // IMPLEMENT LATER check if the email already exist in DB, if it does, send error.
     const update_user_details = await updateUser(userid, username, email);
-    res.json(update_user_details);;
+    res.json(update_user_details);
+});
+
+route_users.get('/analyse/category/', authenticateJWToken, async(req,res)=>{
+    const user = req.user_id["user_id"];
+    console.log(user);
+    const catid = req.query.catid;
+    const getsingleCategoryExpense = await SingleCategoryExpense(catid, user);
+    res.json(getsingleCategoryExpense);
+
 })
 
 export {route_users}
