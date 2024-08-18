@@ -165,7 +165,7 @@ route_users.post('/ai/suggestion', authenticateJWToken, async (req, res) => {
     console.log(expense_data);
 
     let expenseDataString = JSON.stringify(expense_data);
-    let prompt = `You are a personal finance analyst. Here is some expense data for a week: ${expenseDataString}. Please provide your suggestion how user can cut their weekly expense. Please do not reponse in string.
+    let prompt = `You are a personal finance analyst. Here is some expense data for a week: ${expenseDataString}. Please provide your suggestion how user can cut their weekly expense in each category. Please do not reponse in string.
         The response format should in JSON Object. Here is the example response format:
         [
             {
