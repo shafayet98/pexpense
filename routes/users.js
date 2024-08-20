@@ -192,4 +192,28 @@ route_users.post('/ai/suggestion', authenticateJWToken, async (req, res) => {
     res.json(JSON.parse(gpt_res));
 })
 
+// specific category based ai _suggs
+route_users.post('/category/ai/suggestion', authenticateJWToken, async (req, res) => {
+    const user_id = req.user_id["user_id"];
+    let expense_data = req.body.data;
+    console.log(expense_data);
+
+
+
+    let prompt = `You are a personal finance analyst. Here are weekly expense of the user on ${expense_data["category"]}. 
+                The dates of the expenses are ${expense_data["dates"]} and corresponsing expenses are ${expense_data["expense"]}.
+        Please provide the summary of the expenses and also give your suggestion on how user can reduce their expenses on the given category. 
+        Please send the response in plain text. Do not include points. Do not include bold text or any text markup.
+    `;
+
+    const completion = await openai.chat.completions.create({
+        messages: [{ 
+            "role": "user", 
+            "content": prompt }],
+        model: "gpt-4o-mini",
+    });
+    let gpt_res = completion.choices[0].message.content;
+    res.json(gpt_res);
+})
+
 export { route_users }
