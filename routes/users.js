@@ -24,6 +24,7 @@ route_users.get('/:id', async (req, res) => {
     res.send(user);
 });
 
+// responsible for registering user
 route_users.post('/register', async (req, res) => {
     const { email, password } = req.body.data;
     // console.log(email, password);
@@ -42,6 +43,8 @@ route_users.post('/register', async (req, res) => {
     res.status(201).send(user);
 });
 
+
+// responsible for logining the user
 route_users.post('/login', async (req, res) => {
     const { email, password } = req.body.data;
 
@@ -66,7 +69,7 @@ route_users.post('/login', async (req, res) => {
 
 // expense APIs
 
-// user creats categories
+// responsible for creating categories
 route_users.post('/categories', authenticateJWToken, async (req, res) => {
 
     const user = req.user_id;
@@ -74,14 +77,16 @@ route_users.post('/categories', authenticateJWToken, async (req, res) => {
     const categories = await createCategories(user.user_id, category);
     res.json(categories);
 
-})
+});
+
+// responsible for providing category id
 route_users.get('/categories/:id', authenticateJWToken, async (req, res) => {
     const userid = req.params.id;
     const categories = await getCategoriesByUser(userid);
     res.json(categories);
 });
 
-// user delete category
+// responsible for deleting particular category
 route_users.delete('/categories/:id', authenticateJWToken, async (req, res) => {
     const cat_id = req.params.id;
     // call the function that will delete the category
@@ -91,7 +96,6 @@ route_users.delete('/categories/:id', authenticateJWToken, async (req, res) => {
 });
 
 // Internal use APIs.
-
 route_users.get('/category/name', authenticateJWToken, async (req, res) => {
     const user = req.user_id;
     const catName = req.query.name;
@@ -101,8 +105,7 @@ route_users.get('/category/name', authenticateJWToken, async (req, res) => {
     res.json(cat_details);
 })
 
-// user creates expense 
-
+// responsible for creating expense of a category
 route_users.post('/expense', authenticateJWToken, async (req, res) => {
     const { user_id, category_id, amount } = req.body.data;
     console.log(user_id, category_id, amount);
@@ -111,16 +114,14 @@ route_users.post('/expense', authenticateJWToken, async (req, res) => {
 })
 
 
-// sum of categories
-
+// responsible for providing sum of a single categories
 route_users.get('/category/sum', authenticateJWToken, async (req, res) => {
     const user = req.user_id;
     const sumbycats = await categoryBasedSum(user.user_id);
     res.json(sumbycats);
 })
 
-// settings - update username and email
-
+// responsible for settings - update username and email
 route_users.post('/settings/update', authenticateJWToken, async (req, res) => {
     const { userid, username, email } = req.body.data;
     // IMPLEMENT LATER check if the email already exist in DB, if it does, send error.
@@ -128,6 +129,7 @@ route_users.post('/settings/update', authenticateJWToken, async (req, res) => {
     res.json(update_user_details);
 });
 
+// responsible for single category analysis
 route_users.get('/analyse/category/', authenticateJWToken, async (req, res) => {
     const user = req.user_id["user_id"];
     console.log(user);
@@ -137,6 +139,7 @@ route_users.get('/analyse/category/', authenticateJWToken, async (req, res) => {
 
 })
 
+// responsible for AI - Summary
 route_users.post('/ai/summary', authenticateJWToken, async (req, res) => {
     const user_id = req.user_id["user_id"];
     let expense_data = req.body.data;
@@ -159,6 +162,7 @@ route_users.post('/ai/summary', authenticateJWToken, async (req, res) => {
     res.json(ai_summary);
 })
 
+// responsible for AI - Suggestion
 route_users.post('/ai/suggestion', authenticateJWToken, async (req, res) => {
     const user_id = req.user_id["user_id"];
     let expense_data = req.body.data;
@@ -192,7 +196,7 @@ route_users.post('/ai/suggestion', authenticateJWToken, async (req, res) => {
     res.json(JSON.parse(gpt_res));
 })
 
-// specific category based ai _suggs
+// responsible for specific category based ai suggestion
 route_users.post('/category/ai/suggestion', authenticateJWToken, async (req, res) => {
     const user_id = req.user_id["user_id"];
     let expense_data = req.body.data;
