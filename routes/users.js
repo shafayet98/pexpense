@@ -20,7 +20,7 @@ route_users.get('/', async (req, res) => {
 });
 
 route_users.get('/testaws', async (req, res) => {
-    res.json({"msg":"working fine."});
+    res.json({"msg":"I'm working fine."});
 });
 
 route_users.get('/:id', async (req, res) => {
