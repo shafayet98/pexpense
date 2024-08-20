@@ -8,14 +8,19 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import OpenAI from 'openai';
 
-const openai = new OpenAI();
+
 dotenv.config();
+const openai = new OpenAI({apiKey:process.env.OPEN_AI_API_KEY});
 
 const route_users = express.Router();
 
 route_users.get('/', async (req, res) => {
     const users = await getUsers();
     res.send(users);
+});
+
+route_users.get('/testaws', async (req, res) => {
+    res.json({"msg":"working fine."});
 });
 
 route_users.get('/:id', async (req, res) => {
