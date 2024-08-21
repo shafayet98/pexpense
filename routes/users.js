@@ -10,7 +10,7 @@ import OpenAI from 'openai';
 
 
 dotenv.config();
-const openai = new OpenAI({apiKey:process.env.OPEN_AI_API_KEY});
+const openai = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY });
 
 const route_users = express.Router();
 
@@ -20,7 +20,7 @@ route_users.get('/', async (req, res) => {
 });
 
 route_users.get('/testaws', async (req, res) => {
-    res.json({"msg":"I'm working fine."});
+    res.json({ "msg": "I'm working fine." });
 });
 
 route_users.get('/:id', async (req, res) => {
@@ -38,6 +38,7 @@ route_users.post('/register', async (req, res) => {
     const existingUser = await getUserwithEmail(email);
     console.log(existingUser);
     if (existingUser.length > 0) {
+        console.log("USER EXISTS")
         return res.status(400).json({ message: 'User already exists' });
     }
 
@@ -52,22 +53,27 @@ route_users.post('/register', async (req, res) => {
 // responsible for logining the user
 route_users.post('/login', async (req, res) => {
     const { email, password } = req.body.data;
-
-    const usr = await getUserwithEmail(email);
-    // console.log(usr[0].password);
-    if (usr.length > 0) {
-        const match = await bcrypt.compare(password, usr[0].password);
-        if (match) {
-            //login
-            const user = { user_id: usr[0].user_id }
-            console.log(user);
-            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-            res.json({ userid: usr[0].user_id, username: usr[0].user_name, accessToken: accessToken, useremail: email });
+    try {
+        const usr = await getUserwithEmail(email);
+        // console.log(usr[0].password);
+        if (usr.length > 0) {
+            const match = await bcrypt.compare(password, usr[0].password);
+            if (match) {
+                console.log("HEEEEEEEREE")
+                //login
+                const user = { user_id: usr[0].user_id }
+                console.log(user);
+                const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+                res.status(200).json({ userid: usr[0].user_id, username: usr[0].user_name, accessToken: accessToken, useremail: email });
+            } else {
+                res.status(400).json({ message: 'Please provide correct email and password' });
+            }
         } else {
-            res.json({ message: 'Password does not match' }).status(400);
+            return res.status(400).json({ message: 'User not found' });
         }
-    } else {
-        return res.status(400).json({ message: "User not found" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 
 })
@@ -154,9 +160,10 @@ route_users.post('/ai/summary', authenticateJWToken, async (req, res) => {
     let prompt = `You are a personal finance analyst. Here is some expense data for a week: ${expenseDataString}. Please provide a summary in plain text format. Send the response in plain text. Do not include points. Do not include bold text or any text markup.`;
 
     const completion = await openai.chat.completions.create({
-        messages: [{ 
-            "role": "user", 
-            "content": prompt }],
+        messages: [{
+            "role": "user",
+            "content": prompt
+        }],
         model: "gpt-4o-mini",
     });
     let gpt_res = completion.choices[0].message.content;
@@ -191,9 +198,10 @@ route_users.post('/ai/suggestion', authenticateJWToken, async (req, res) => {
     `;
 
     const completion = await openai.chat.completions.create({
-        messages: [{ 
-            "role": "user", 
-            "content": prompt }],
+        messages: [{
+            "role": "user",
+            "content": prompt
+        }],
         model: "gpt-4o-mini",
     });
     let gpt_res = completion.choices[0].message.content;
@@ -216,9 +224,10 @@ route_users.post('/category/ai/suggestion', authenticateJWToken, async (req, res
     `;
 
     const completion = await openai.chat.completions.create({
-        messages: [{ 
-            "role": "user", 
-            "content": prompt }],
+        messages: [{
+            "role": "user",
+            "content": prompt
+        }],
         model: "gpt-4o-mini",
     });
     let gpt_res = completion.choices[0].message.content;
