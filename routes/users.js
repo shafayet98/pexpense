@@ -59,17 +59,16 @@ route_users.post('/login', async (req, res) => {
         if (usr.length > 0) {
             const match = await bcrypt.compare(password, usr[0].password);
             if (match) {
-                console.log("HEEEEEEEREE")
                 //login
                 const user = { user_id: usr[0].user_id }
                 console.log(user);
                 const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
                 res.status(200).json({ userid: usr[0].user_id, username: usr[0].user_name, accessToken: accessToken, useremail: email });
             } else {
-                res.status(400).json({ message: 'Please provide correct email and password' });
+                res.status(400).json({ message: 'Please provide correct email and password.' });
             }
         } else {
-            return res.status(400).json({ message: 'User not found' });
+            return res.status(400).json({ message: 'User not found. Please provile correct email.' });
         }
     } catch (err) {
         console.error(err);
