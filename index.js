@@ -20,6 +20,6 @@ app.use('/api/users', route_users);
 // app.put();
 // app.delete();
 
-app.listen(8080, () => {
-    console.log("Server is running on 8080")
+app.listen(3000, () => {
+    console.log("Server is running on 3000");
 });

@@ -19,6 +19,13 @@ route_users.get('/', async (req, res) => {
     res.send(users);
 });
 
+route_users.post('/test', async (req, res) => {
+    const {gotData} = req.body;
+    console.log(gotData);
+    res.status(200).send({"data": gotData});
+});
+
+
 route_users.get('/testaws', async (req, res) => {
     res.json({ "msg": "I'm working fine." });
 });
@@ -46,7 +53,7 @@ route_users.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await insertUser(email, hashedPassword);
-    res.status(201).send(user);
+    res.status(200).send(user);
 });
 
 
