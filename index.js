@@ -9,7 +9,13 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+    origin: 'http://expensewise.shafthinks.xyz', // Allow requests from this origin
+    methods: 'GET,POST', // Specify the methods you want to allow
+    allowedHeaders: 'Content-Type' // Specify the headers you want to allow
+}));
+
 app.use(express.json());
 
 
