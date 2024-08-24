@@ -13,15 +13,10 @@ const app = express();
 app.use(cors({
     origin: 'http://expensewise.shafthinks.xyz', // Allow requests from this origin
     methods: 'GET,POST', // Specify the methods you want to allow
-    allowedHeaders: 'Content-Type' // Specify the headers you want to allow
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'] // Specify the headers you want to allow
 }));
-
 app.use(express.json());
-
-
-
 app.use('/api/users', route_users);
-
 
 // app.put();
 // app.delete();
